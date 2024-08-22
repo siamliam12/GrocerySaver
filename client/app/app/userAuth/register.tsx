@@ -1,7 +1,23 @@
 import { Text, View ,Image,StyleSheet, TextInput, TouchableOpacity} from "react-native";
 import { Link } from 'expo-router';
+import { registerUser } from "@/hooks/userAuth";
+import { useState } from 'react';
 
-export default function register() {
+interface RegisterProps {
+  onRegisterSuccess: () => void;
+}
+const register: React.FC<RegisterProps> =({onRegisterSuccess})=> {
+  const [email, setEmail] = useState<string>('');
+  const [name, setName] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const handleSignup = async () => {
+    const data = await registerUser(email, name,password);
+    if (data) {
+      onRegisterSuccess(); // Call the success callback
+    } else {
+      alert('Signup failed');
+    }
+  };
   return (
     <View
       style={{
@@ -19,19 +35,26 @@ export default function register() {
           <Text style={styles.Heading}>Register User</Text>
         <View style={styles.formContainer}>
         <TextInput
-          placeholder="Enter your username"
+          placeholder="Enter your email"
+          value={email}
+          onChangeText={setEmail}
           style={styles.input}
         />
         <TextInput
-          placeholder="Enter your email"
+          placeholder="Enter your Username"
+          value={name}
+          onChangeText={setName}
           style={styles.input}
         />
         <TextInput
           placeholder="Enter your password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
           style={styles.input}
         />
         <Text style={styles.warning}><Link href="./login" >Already have an account?Login</Link></Text>
-        <TouchableOpacity style={styles.button} onPress={() => alert('Form submitted!')}>
+        <TouchableOpacity style={styles.button} onPress={handleSignup}>
           <Text style={styles.buttonText}>Submit</Text>
         </TouchableOpacity>
       </View>
@@ -81,3 +104,5 @@ const styles = StyleSheet.create({
         fontWeight: 'light', // Font weight
       },
 })
+
+export default register

@@ -1,7 +1,20 @@
 import { Text, View ,Image,StyleSheet, TextInput, TouchableOpacity} from "react-native";
 import { Link } from 'expo-router';
+import { loginUser } from "@/hooks/userAuth";
+import { useState } from 'react';
 
-export default function login() {
+export default function login({ onLoginSuccess}) {
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+
+  const handleLogin = async () => {
+    const data = await loginUser(email, password);
+    if (data) {
+      onLoginSuccess(); // Call the success callback
+    } else {
+      alert('Login failed');
+    }
+  };
   return (
     <View
       style={{
@@ -20,14 +33,19 @@ export default function login() {
         <View style={styles.formContainer}>
         <TextInput
           placeholder="Enter your email"
+          value={email}
+          onChangeText={setEmail}
           style={styles.input}
         />
         <TextInput
           placeholder="Enter your password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
           style={styles.input}
         />
         <Text style={styles.warning}><Link href="./login" >Don't have an account?Register</Link></Text>
-        <TouchableOpacity style={styles.button} onPress={() => alert('Form submitted!')}>
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Submit</Text>
         </TouchableOpacity>
       </View>
