@@ -1,7 +1,7 @@
 databases:
   - name: api
     plan: free
-    databaseName: bakend
+    databaseName: backend
     user: siamliam12
 
 services:
@@ -9,12 +9,12 @@ services:
     plan: free
     name: api
     runtime: python
-    buildCommand: "./build.sh"
-    startCommand: "python -m gunicorn api.asgi:application -k uvicorn.workers.UvicornWorker"
+    buildCommand: "./backend/build.sh"
+    startCommand: "python -m gunicorn ./backend/api.asgi:application -k uvicorn.workers.UvicornWorker"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: api
+          name: apidb
           property: connectionString
       - key: SECRET_KEY
         generateValue: true
