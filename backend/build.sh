@@ -10,5 +10,5 @@ python -m pip install --upgrade pip
 python ./backend/manage.py collectstatic --no-input
 
 # Apply any outstanding database migrations
-python ./baackend/manage.py makemigrations
+python ./backend/manage.py makemigrations
 python ./backend/manage.py migrate
