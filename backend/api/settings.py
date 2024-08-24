@@ -40,6 +40,10 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': True,
+    'BLACKLIST_TOKEN_LIST_ENABLED': True,
+    'BLACKLIST_TOKEN_LIST_MODEL': 'yourapp.BlacklistedToken',
 }
 AUTH_USER_MODEL = 'access.UserData'
 CORS_ORIGIN_ALLOW_ALL = True
@@ -82,7 +86,7 @@ WSGI_APPLICATION = "api.wsgi.application"
 DATABASES = {
    'default': dj_database_url.config(
         # Replace this value with your local database's connection string.
-        default='postgresql://siamliam12:INJ9Sud2mBjUgUeKcOsR1nsOBT0OovrQ@dpg-cr3cl52j1k6c73dk6850-a.oregon-postgres.render.com/bakend',
+        default='postgresql://siamliam12:jdSRM0neb6MPuRgJ8lVE6Izs3qSibRcQ@dpg-cr528lqj1k6c7392aii0-a.singapore-postgres.render.com/backendb',
         conn_max_age=600
     )
 }
