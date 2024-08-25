@@ -43,7 +43,7 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
     'UPDATE_LAST_LOGIN': True,
     'BLACKLIST_TOKEN_LIST_ENABLED': True,
-    'BLACKLIST_TOKEN_LIST_MODEL': 'yourapp.BlacklistedToken',
+    'BLACKLIST_TOKEN_LIST_MODEL': 'api.BlacklistedToken',
 }
 AUTH_USER_MODEL = 'access.UserData'
 CORS_ORIGIN_ALLOW_ALL = True
