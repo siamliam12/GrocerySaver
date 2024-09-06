@@ -13,17 +13,19 @@ interface AuthResponse {
 
 export const loginUser = async (email:string,password:string) => {
     try{
-        const response = await fetch(`https://grocerysaver.onrender.com/auth/api/login/`,{
-            method: 'POST',
+        const response = await axios.post(`https://grocerysaver.onrender.com/auth/api/login/`,{
+            email,
+            password,
+        },{ 
             headers: {
                 'Content-Type': 'application/json',
             },
-            body : JSON.stringify({email: email,password: password})
         })
         console.log(response)
-        if (response.ok) {
-            const data:AuthResponse = await response.json()
+        if (response.status === 200) {
+            const data:AuthResponse = await response.data
             await AsyncStorage.setItem('accessToken',data.access)
+            await AsyncStorage.setItem('refreshToken',data.refresh)
             return data;
         }else{
             throw new Error('Login failed');
@@ -33,8 +35,39 @@ export const loginUser = async (email:string,password:string) => {
         return null;
     }
 }
+export const logOutUser = async () => {
+    const refresh = await AsyncStorage.getItem('refreshToken');
+    const accessToken = await AsyncStorage.getItem('accessToken');
+    if (!refresh || !accessToken) {
+        console.error('No tokens available');
+        return;
+      }
+    try{
+        const response = await axios.post(`https://grocerysaver.onrender.com/auth/api/logout/`,{
+            refresh,
+        },{ 
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}`
+            },
+        })
+        console.log(response.data)
+        // if (response.status === 205 || response.status === 200) {
+        //     const data:AuthResponse = await response.data
+        //     console.log('LogOut success');
+        //     return data;
+        //     // return true; 
+        // }else{
+        //     throw new Error('LogOut failed');
+        // }
+    }catch (error){
+        console.error(error);
+        return null;
+    }
+}
 
 export const registerUser = async (email:string,name:string,password:string) => {
+    
     try{
         const response = await axios.post(`https://grocerysaver.onrender.com/auth/api/register/`,{
             email,
@@ -45,13 +78,16 @@ export const registerUser = async (email:string,name:string,password:string) => 
                 'Content-Type': 'application/json',
             },
         })
-        console.log(response)
+        // console.log(`response:${JSON.stringify(response)}`)
         if (response.status === 200) {
             const data: SignupResponse = response.data;
-            await AsyncStorage.setItem('userId', data.id);
+            const id = JSON.stringify(data.id)
+            console.log('User registered:', data);
+            await AsyncStorage.setItem('userId', id);
             await AsyncStorage.setItem('userName', data.name);
             await AsyncStorage.setItem('userEmail', data.email);
             return data;
+            
         }else{
             throw new Error('Signup failed');
         }
@@ -63,4 +99,9 @@ export const registerUser = async (email:string,name:string,password:string) => 
           console.error('Unexpected error:', error);
         }
       }
+}
+
+export const checkIfLoggedIn = async () => {
+    const token = await AsyncStorage.getItem('accessToken');
+    return token !== null;
 }

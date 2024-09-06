@@ -1,24 +1,33 @@
-import { Text, View ,Image,StyleSheet, TextInput, TouchableOpacity} from "react-native";
+import { Text, View ,Image,StyleSheet, TextInput, TouchableOpacity,KeyboardAvoidingView,Platform,ScrollView} from "react-native";
 import { Link } from 'expo-router';
 import { registerUser } from "@/hooks/userAuth";
 import { useState } from 'react';
+import { useRouter } from 'expo-router';
 
-interface RegisterProps {
-  onRegisterSuccess: () => void;
-}
-const register: React.FC<RegisterProps> =({onRegisterSuccess})=> {
+// interface RegisterProps {
+//   onRegisterSuccess: () => void;
+// }
+const register =()=> {
+  const router = useRouter();
   const [email, setEmail] = useState<string>('');
   const [name, setName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const handleSignup = async () => {
     const data = await registerUser(email, name,password);
     if (data) {
-      onRegisterSuccess(); // Call the success callback
+      console.log('User registered:', data);
+      router.push('/'); // Navigate to the home page
     } else {
       alert('Signup failed');
     }
   };
   return (
+    <KeyboardAvoidingView
+    style={{ flex: 1 }}
+    behavior={Platform.OS === 'android' ? 'padding' : 'height'}
+    keyboardVerticalOffset={80} // Adjust this value to avoid overlapping>
+    >
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
     <View
       style={{
         flex: 1,
@@ -59,6 +68,8 @@ const register: React.FC<RegisterProps> =({onRegisterSuccess})=> {
         </TouchableOpacity>
       </View>
     </View>
+    </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 

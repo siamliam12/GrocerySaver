@@ -1,21 +1,30 @@
-import { Text, View ,Image,StyleSheet, TextInput, TouchableOpacity} from "react-native";
+import { Text, View ,Image,StyleSheet, TextInput, TouchableOpacity,KeyboardAvoidingView,Platform,ScrollView} from "react-native";
 import { Link } from 'expo-router';
 import { loginUser } from "@/hooks/userAuth";
 import { useState } from 'react';
+import { useRouter } from 'expo-router';
 
-export default function login({ onLoginSuccess}) {
+export default function login() {
+  const router = useRouter();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
   const handleLogin = async () => {
     const data = await loginUser(email, password);
     if (data) {
-      onLoginSuccess(); // Call the success callback
+      console.log('User registered:', data);
+      router.push('/'); // Navigate to the home page
     } else {
       alert('Login failed');
     }
   };
   return (
+    <KeyboardAvoidingView
+    style={{ flex: 1 }}
+    behavior={Platform.OS === 'android' ? 'padding' : 'height'}
+    keyboardVerticalOffset={80} // Adjust this value to avoid overlapping>
+    >
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
     <View
       style={{
         flex: 1,
@@ -50,6 +59,8 @@ export default function login({ onLoginSuccess}) {
         </TouchableOpacity>
       </View>
     </View>
+    </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
